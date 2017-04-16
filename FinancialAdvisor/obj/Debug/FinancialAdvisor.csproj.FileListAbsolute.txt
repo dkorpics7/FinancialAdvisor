@@ -1,0 +1,6 @@
+c:\users\wecancodeit\documents\visual studio 2015\Projects\FinancialAdvisor\FinancialAdvisor\bin\Debug\FinancialAdvisor.exe.config
+C:\Users\WeCanCodeIT\Documents\Visual Studio 2015\Projects\FinancialAdvisor\FinancialAdvisor\bin\Debug\FinancialAdvisor.exe
+C:\Users\WeCanCodeIT\Documents\Visual Studio 2015\Projects\FinancialAdvisor\FinancialAdvisor\bin\Debug\FinancialAdvisor.pdb
+C:\Users\WeCanCodeIT\Documents\Visual Studio 2015\Projects\FinancialAdvisor\FinancialAdvisor\obj\Debug\FinancialAdvisor.csprojResolveAssemblyReference.cache
+C:\Users\WeCanCodeIT\Documents\Visual Studio 2015\Projects\FinancialAdvisor\FinancialAdvisor\obj\Debug\FinancialAdvisor.exe
+C:\Users\WeCanCodeIT\Documents\Visual Studio 2015\Projects\FinancialAdvisor\FinancialAdvisor\obj\Debug\FinancialAdvisor.pdb
