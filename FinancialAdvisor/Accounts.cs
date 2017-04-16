@@ -9,11 +9,17 @@ namespace FinancialAdvisor
     class Accounts
     {
         //fields
+        protected int clientNumber;
         protected int acctNumber;
         protected double balance;
         protected int acctType;              //Type is 0 for checking and 1 for savings
 
         //properties
+        public int ClientNumber
+        {
+            get { return this.clientNumber; }
+            set { this.clientNumber = value; }
+        }
         public int AcctNumber
         {
             get { return this.acctNumber; }
@@ -39,7 +45,7 @@ namespace FinancialAdvisor
         {
             this.acctType = acctType;
         }
-        public Accounts(int acctNumber, double balance, int acctType)
+        public Accounts(int clientNumber, int acctNumber, double balance, int acctType)
         {
             this.acctNumber = acctNumber;
             this.balance = balance;

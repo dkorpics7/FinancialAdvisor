@@ -13,9 +13,12 @@ namespace FinancialAdvisor
         private double intRate;
 
         //constructors
-        public Savings():base(1)
+        public Savings(int clientNumber, int acctNumber, double balance)
         {
-             
+            this.clientNumber = clientNumber;
+            this.acctNumber = acctNumber;
+            this.balance = balance;
+            this.acctType = 1;
         }
 
     }
