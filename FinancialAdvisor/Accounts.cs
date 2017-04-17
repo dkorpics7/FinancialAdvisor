@@ -53,15 +53,19 @@ namespace FinancialAdvisor
         }
 
         //methods
-        public void GetBalance()
+        public virtual void GetBalance(int clientNumber, Client client, Accounts account)
+        {
+            Console.Clear();
+            Console.WriteLine("\r\n\t\tAccount Balance for {0} {1}", client.FName, client.LName);
+            Console.WriteLine("\r\t =====================================================\r\n");
+            Console.WriteLine("\r\n\t     Acct. No.              Current Balance");
+            Console.WriteLine("    \t    ==========            ===================\r\n");
+        }
+        public virtual void Deposit()
         {
 
         }
-        public void Deposit()
-        {
-
-        }
-        public void Withdraw()
+        public virtual void Withdraw()
         {
 
         }

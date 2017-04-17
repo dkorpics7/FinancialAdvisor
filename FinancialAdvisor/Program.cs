@@ -14,9 +14,9 @@ namespace FinancialAdvisor
             //Clients can have checking and/or savings accounts
 
             int menuOption = 0;             //user's menu option entered
-            int lastChecking = 0;           //last checking account number assigned
-            int lastSavings = 0;            //last savings account number assigned
             int clientNumber = -1;          //client identification number (used internally)
+            int lnum = -1;                  //list location associated with client number (clientNumber-1)
+            int acctType = 0;               //Account type is 0 for checking and 1 for savings
             string input = "";              //user input
             string fName = "";              //user first name
             string lName = "";              //user last name
@@ -29,17 +29,23 @@ namespace FinancialAdvisor
             List<Client> clientList = new List<Client>();
             clientList.Add(new Client("Diane","Korpics",1,"941 Westhaven Drive","","Hudson","Ohio","44236","(330) 687-2486","(330) 687-2486"));
             clientList.Add(new Client("Daniel", "Vivacqua", 2));
-            clientList.Add(new Client("Jarryd", "Hurtley", 3));
+            clientList.Add(new Client("Jarryd", "Huntley", 3));
             clientList.Add(new Client("Dave", "Kolar", 4));
 
 
-            //instantiate existing accounts
-            Checking DianeChecking = new Checking(1, 0101, 2325.89);
-            Checking DanielChecking = new Checking(2, 0102, 4352.13);
-            Checking JarrydChecking = new Checking(3, 0103, 4791.22);
-            Checking DaveChecking = new FinancialAdvisor.Checking(4, 0104, 17325.09);
-            Savings DianeSavings = new FinancialAdvisor.Savings(1, 1234, 8732.84);
-            Savings DanielSavings = new FinancialAdvisor.Savings(2, 1235, 12375.32);
+            //instantiate existing checking accounts
+            List<Checking> checkingAccts = new List<Checking>();
+            checkingAccts.Add(new Checking(1, 0101, 2325.89));
+            checkingAccts.Add(new Checking(2, 0102, 4352.13));
+            checkingAccts.Add(new Checking(3, 0103, 4791.22));
+            checkingAccts.Add(new Checking(4, 0104, 17325.09));
+
+            //instantiate existing savings accounts
+            List<Savings> savingsAccts = new List<Savings>();
+            savingsAccts.Add(new Savings(1, 10001, 8732.84));
+            savingsAccts.Add(new Savings(2, -1, 0));       //account number = -1 means an account was not opened yet
+            savingsAccts.Add(new Savings(3, -1, 0));       //account number = -1 means an account was not opened yet
+            savingsAccts.Add(new Savings(4, 10004, 52375.32));
 
             //Determine if it is morning, afternoon, or evening
             timeOfDay = GetTimeOfDay();
@@ -88,6 +94,9 @@ namespace FinancialAdvisor
                     clientNumber = clientList.Count + 1;
                     clientList.Add(new Client(fName, lName, clientNumber));
                     exit = clientList[clientList.Count-1].EnterClientInfo(clientNumber, clientList[clientNumber-1]);
+                    checkingAccts.Add(new Checking(clientNumber, -1, 0));       
+                    savingsAccts.Add(new Savings(clientNumber, -1, 0));      
+
                 }
                 else
                 //If an existing client, greet client
@@ -95,6 +104,7 @@ namespace FinancialAdvisor
                     Console.Clear();
                     Console.WriteLine("\r\n\t\tWelcome back {0} and good {1}!", fName, timeOfDay);
                 }
+                lnum = clientNumber - 1;
             }
 
             while(exit && menuOption !=5)
@@ -103,21 +113,39 @@ namespace FinancialAdvisor
                 DisplayMainMenu();
 
                 //Get menu option from user
-                Console.Write("\r\n\r\n\tEnter menu option:  ");
-                input = Console.ReadLine().Trim().ToLower();
-
-                menuOption = GetInput(input);
+                menuOption = GetInput();
                 if (menuOption == -2) menuOption = 5;
+
                 switch (menuOption)
                 {
                     case 1:                         //View Client Info
-                        exit = clientList[clientNumber-1].ViewClientInfo(clientNumber, clientList[clientNumber - 1]);
+                        exit = clientList[lnum].ViewClientInfo(clientNumber, clientList[lnum]);
                         break;
                     case 2:                         //View Account Balance(s)
+                        checkingAccts[lnum].GetBalance(clientNumber, clientList[lnum], checkingAccts[lnum]);
+                        savingsAccts[lnum].GetBalance(clientNumber, clientList[lnum], savingsAccts[lnum]);
                         break;
                     case 3:                         //Make a Deposit
+                        acctType = GetInput();
+                        if (acctType == 0)
+                        {
+   //                         exit = checkingAccts[lnum].Deposit(clientNumber, clientList[lnum], checkingAccts[lnum]);
+                        }
+                        else if (acctType == 1)
+                        {
+     //                       exit = savingsAccts[lnum].Deposit(clientNumber, clientList[lnum], savingsAccts[lnum]);
+                        }
+                        else if (acctType == -2)
+                        {
+                            exit = false;
+                        }
+                        else
+                        {
+                            Console.WriteLine("\r\n*** Invalid Entry.");
+                        }
                         break;
                     case 4:                         //Make a Withdrawal
+       //                 exit = Withdraw();
                         break;
                     case 5:                         //Exit
                         exit = false;
@@ -139,8 +167,6 @@ namespace FinancialAdvisor
                 //}
 
                 Console.ReadKey();
-                exit = false;
-
 
                 //view account balances
 
@@ -226,12 +252,17 @@ namespace FinancialAdvisor
             Console.WriteLine("\t5.  Exit.");
         }
 
-        static int GetInput(string input) // parses input string to return a valid user-selected menu option
+        static int GetInput() // parses input string to return a valid user-selected menu option
         {
             int selectedOption;
             double decimalNumber;
+            string input;
             bool validInt = false;
             bool validDouble = false;
+
+            //prompt user to enter menu option
+            Console.Write("\r\n\r\n\tEnter menu option:  ");
+            input = Console.ReadLine().Trim().ToLower();
 
             validInt = int.TryParse(input, out selectedOption);
             validDouble = double.TryParse(input, out decimalNumber);
