@@ -294,12 +294,13 @@ namespace FinancialAdvisor
                     Console.WriteLine("\t4.  Update zip code");
                     Console.WriteLine("\t5.  Update home phone");
                     Console.WriteLine("\t6.  Update cell phone");
-                    Console.WriteLine("\t7.  Exit");
+                    Console.WriteLine("\t7.  Update all of the above");
+                    Console.WriteLine("\t8.  Exit");
 
                     Console.Write("\r\n\r\n\tEnter menu choice:  ");  
                     input = Console.ReadLine().Trim().ToLower();      //Get user menu choice
                     menuOption = GetInput(input);
-                    if (menuOption == -2) menuOption = 7;
+                    if (menuOption == -2) menuOption = 8;
 
                     switch (menuOption)
                     {
@@ -322,10 +323,18 @@ namespace FinancialAdvisor
                             exit = GetClientCell(clientNumber, client);
                             break;
                         case 7:
+                            exit = GetClientAddress(clientNumber, client);
+                            if(exit) exit = GetClientCity(clientNumber, client);
+                            if (exit) exit = GetClientState(clientNumber, client);
+                            if (exit) exit = GetClientZip(clientNumber, client);
+                            if (exit) exit = GetClientPhone(clientNumber, client);
+                            if (exit) exit = GetClientCell(clientNumber, client);
+                            break;
+                        case 8:
                             exit = false;
                             break;
                         default:
-                            Console.WriteLine("\r\n*** Invalid Entry.");
+                            Console.WriteLine("\r\n\a*** Invalid Entry.");
                             break;
                     }
 

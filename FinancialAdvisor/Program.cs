@@ -71,6 +71,7 @@ namespace FinancialAdvisor
                 {
                     Console.Write("\r\n\r\n\tYou entered {0} {1}.  Is this Correct (y or n)? ", fName, lName);
                     input = Console.ReadLine().Trim();
+                    if (input.Length < 1) input = "n";
                     if (input.Substring(0, 1).ToLower() == "y") valid = true;
                     if (input.Substring(0, 1).ToLower() == "e") exit = false;
                 }
@@ -114,74 +115,155 @@ namespace FinancialAdvisor
 
                 //Get menu option from user
                 menuOption = GetInput();
-                if (menuOption == -2) menuOption = 5;
+                if (menuOption == -2) menuOption = 6;
 
                 switch (menuOption)
                 {
                     case 1:                         //View Client Info
                         exit = clientList[lnum].ViewClientInfo(clientNumber, clientList[lnum]);
                         break;
-                    case 2:                         //View Account Balance(s)
-                        checkingAccts[lnum].GetBalance(clientNumber, clientList[lnum], checkingAccts[lnum]);
-                        savingsAccts[lnum].GetBalance(clientNumber, clientList[lnum], savingsAccts[lnum]);
-                        break;
-                    case 3:                         //Make a Deposit
-                        acctType = GetInput();
-                        if (acctType == 0)
+                    case 2:                         //Open New Account
+                        OpenAcctMenu();
+                        menuOption = GetInput();
+
+                        if (menuOption == 1 && checkingAccts[lnum].AcctNumber != -1)
                         {
-   //                         exit = checkingAccts[lnum].Deposit(clientNumber, clientList[lnum], checkingAccts[lnum]);
+                            Console.WriteLine("\r\n*** You already have a checking account.");
                         }
-                        else if (acctType == 1)
+                        else if (menuOption == 2 && savingsAccts[lnum].AcctNumber != -1)
                         {
-     //                       exit = savingsAccts[lnum].Deposit(clientNumber, clientList[lnum], savingsAccts[lnum]);
+                            Console.WriteLine("\r\n*** You already have a savings account.");
                         }
-                        else if (acctType == -2)
+                        else if ((menuOption==3 && checkingAccts[lnum].AcctNumber != -1) || (menuOption == 3 && savingsAccts[lnum].AcctNumber != -1))
+                        {
+                            Console.WriteLine("\r\n*** You already have a checking or savings account.");
+                        }
+                        else if (menuOption == 1)
+                        {
+                            checkingAccts[lnum].AcctNumber = 100 + clientNumber;
+                            Console.Clear();
+                            Console.WriteLine("\r\n\tThank you for opening a checking account.");
+                            Console.WriteLine("\r\n\tYour account number is:  " + checkingAccts[clientNumber - 1].AcctNumber);
+                        }
+                        else if (menuOption == 2)
+                        {
+                            savingsAccts[lnum].AcctNumber = 10000 + clientNumber;
+                            Console.Clear();
+                            Console.WriteLine("\r\n\tThank you for opening a savings account.");
+                            Console.WriteLine("\r\n\tYour account number is:  " + savingsAccts[clientNumber - 1].AcctNumber);
+                        }
+                        else if (menuOption ==3)
+                        {
+                            checkingAccts[lnum].AcctNumber = 100 + clientNumber;
+                            savingsAccts[lnum].AcctNumber = 10000 + clientNumber;
+                            Console.Clear();
+                            Console.WriteLine("\r\n\tThank you for opening accounts with Financial Solutions!");
+                            Console.WriteLine("\r\n\tYour account numbers are: Checking: {0} and Savings {1}", checkingAccts[clientNumber - 1].AcctNumber, savingsAccts[clientNumber - 1].AcctNumber);
+                        }
+                        else if (menuOption == 4)
                         {
                             exit = false;
                         }
                         else
                         {
-                            Console.WriteLine("\r\n*** Invalid Entry.");
+                            Console.WriteLine("\r\n\a*** Invalid Entry");
                         }
+                        Wait();
                         break;
-                    case 4:                         //Make a Withdrawal
-       //                 exit = Withdraw();
+                    case 3:                         //View Account Balance(s)
+                        checkingAccts[lnum].GetBalance(clientNumber, clientList[lnum], checkingAccts[lnum]);
+                        savingsAccts[lnum].GetBalance(clientNumber, clientList[lnum], savingsAccts[lnum]);
+                        Wait();                     //Waits for user to press return
                         break;
-                    case 5:                         //Exit
+                    case 4:                         //Make a Deposit
+                        DepositMenu();              //Choose checking or savings
+                        menuOption = GetInput();
+
+                        if (menuOption==1 && checkingAccts[lnum].AcctNumber==-1)
+                        {
+                            Console.WriteLine("\r\n*** You do not currently have a checking account.");
+                            Console.WriteLine("*** To open an account, select \"Open Account\" from the Main Menu.");
+                        }
+                        else if (menuOption==2 && savingsAccts[lnum].AcctNumber==-1)
+                        {
+                            Console.WriteLine("\r\n*** You do not currently have a savings account.");
+                            Console.WriteLine("*** To open an account, select \"Open Account\" from the Main Menu.");
+                        }
+                        else if (menuOption == 1)
+                        {
+                            exit = checkingAccts[lnum].Deposit(clientNumber, clientList[lnum], checkingAccts[lnum]);
+                        }
+                        else if (menuOption == 2)
+                        {
+                            exit = savingsAccts[lnum].Deposit(clientNumber, clientList[lnum], savingsAccts[lnum]);
+                        }
+                        else if (menuOption == -2)
+                        {
+                            exit = false;
+                        }
+                        else
+                        {
+                            Console.WriteLine("\r\n\a*** Invalid Entry.");
+                        }
+                        Wait();
+                        break;
+                    case 5:                         //Make a Withdrawal
+                        WithdrawMenu();             //Choose checking or savings
+                        menuOption = GetInput();
+
+                        if (menuOption == 1 && checkingAccts[lnum].AcctNumber == -1)
+                        {
+                            Console.WriteLine("\r\n*** You do not currently have a checking account.");
+                            Console.WriteLine("*** To open an account, select \"Open Account\" from the Main Menu.");
+                        }
+                        else if (menuOption == 2 && savingsAccts[lnum].AcctNumber == -1)
+                        {
+                            Console.WriteLine("\r\n*** You do not currently have a savings account.");
+                            Console.WriteLine("*** To open an account, select \"Open Account\" from the Main Menu.");
+                        }
+                        else if (menuOption == 1)
+                        {
+                            exit = checkingAccts[lnum].Withdraw(clientNumber, clientList[lnum], checkingAccts[lnum],savingsAccts[lnum]);
+                        }
+                        else if (menuOption == 2)
+                        {
+                            exit = savingsAccts[lnum].Withdraw(clientNumber, clientList[lnum], savingsAccts[lnum],savingsAccts[lnum]);
+                        }
+                        else if (menuOption == -2)
+                        {
+                            exit = false;
+                        }
+                        else
+                        {
+                            Console.WriteLine("\r\n\a*** Invalid Entry.");
+                        }
+                        Wait();
+                        break;
+                    case 6:                         //Exit
                         exit = false;
                         break;
+                    case 7:                         //Hidden menu option used by programmer
+                        if(fName=="Diane" && lName=="Korpics")
+                        {
+                            foreach (Client c in clientList)
+                            {
+                                Console.WriteLine("\r\n{0}, {1}, {2}, {3}  {4}",c.FName,c.Address1,c.City,c.State,c.Zip);
+                                Console.WriteLine(c.HomePhone + " ,  " + c.CellPhone);
+                            }
+                        }
+                        break;
                     default:                        //Invalid input
-                        Console.WriteLine("\r\n*** Invalid Input Option.\r\n");
+                        Console.WriteLine("\r\n\a*** Invalid Entry.\r\n");
+                        Wait();
                         break;
                 }
-
-                //foreach (Client c in clientList)
-                //{
-                //    Console.WriteLine("\r\n" + c.FName);
-                //    Console.WriteLine(c.Address1);
-                //    Console.WriteLine(c.City);
-                //    Console.WriteLine(c.State);
-                //    Console.WriteLine(c.Zip);
-                //    Console.WriteLine(c.HomePhone);
-                //    Console.WriteLine(c.CellPhone);
-                //}
-
-                Console.ReadKey();
-
-                //view account balances
-
-                //make a deposit
-
-                //make a withdrawal
-
-
 
             } // end Main Menu loop
 
             //Thank user for their business and exit program
             Console.Clear();
-            Console.WriteLine("\r\n\r\n\t!!!!!   Thank you for your business   !!!!!");
-            Console.WriteLine("\r\nWe hope your experience was a pleasant one. Have a nice {0}.", timeOfDay);
+            Console.WriteLine("\r\n\r\n\t     !!!!!   Thank you for your business   !!!!!");
+            Console.WriteLine("\r\n   We hope your experience was a pleasant one. Have a nice {0}.", timeOfDay);
             Console.WriteLine("\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\nPress any key to continue ...");
             Console.ReadKey();
         }
@@ -245,11 +327,12 @@ namespace FinancialAdvisor
             Console.Clear();
             Console.WriteLine("\r\n\r\n\t\t\tMAIN MENU");
             Console.WriteLine("\t\t    ================\r\n\r\n");
-            Console.WriteLine("\t1.  View/Update your information.");
-            Console.WriteLine("\t2.  View Account Balance.");
-            Console.WriteLine("\t3.  Deposit Funds.");
-            Console.WriteLine("\t4.  Withdraw Funds.");
-            Console.WriteLine("\t5.  Exit.");
+            Console.WriteLine("\t1.  View/Update your information");
+            Console.WriteLine("\t2.  Open Account (checking or savings)");
+            Console.WriteLine("\t3.  View Account Balance");
+            Console.WriteLine("\t4.  Deposit Funds");
+            Console.WriteLine("\t5.  Withdraw Funds");
+            Console.WriteLine("\t6.  Exit");
         }
 
         static int GetInput() // parses input string to return a valid user-selected menu option
@@ -261,13 +344,18 @@ namespace FinancialAdvisor
             bool validDouble = false;
 
             //prompt user to enter menu option
-            Console.Write("\r\n\r\n\tEnter menu option:  ");
+            Console.Write("\r\n\tEnter menu option:  ");
             input = Console.ReadLine().Trim().ToLower();
 
             validInt = int.TryParse(input, out selectedOption);
             validDouble = double.TryParse(input, out decimalNumber);
 
-            if (validInt)
+            if (input.Length < 1)
+            {
+                selectedOption = -1;
+                return selectedOption;
+            }
+            else if (validInt)
             {
                 return selectedOption;                       // a valid integer was entered
             }
@@ -287,5 +375,50 @@ namespace FinancialAdvisor
                 return selectedOption;
             }
         }
+
+        static void DepositMenu()  //displays deposit menu
+        {
+            Console.Clear();
+            Console.WriteLine("\r\n\r\n\t\t     DEPOSIT MENU");
+            Console.WriteLine("\t\t  ===================\r\n");
+            Console.WriteLine("\tTo which account would you like to make a deposit?\r\n\r\n");
+            Console.WriteLine("\t1.  Checking Account");
+            Console.WriteLine("\t2.  Savings Account");
+            Console.WriteLine("\t3.  Exit");
+        }
+
+        static void WithdrawMenu()  //displays withdrawal menu
+        {
+            Console.Clear();
+            Console.WriteLine("\r\n\r\n\t\t    WITHDRAWAL MENU");
+            Console.WriteLine("\t\t  ===================\r\n");
+            Console.WriteLine("\tFrom which account would you like to make a withdrawal?\r\n\r\n");
+            Console.WriteLine("\t1.  Checking Account");
+            Console.WriteLine("\t2.  Savings Account");
+            Console.WriteLine("\t3.  Exit");
+        }
+
+        static void OpenAcctMenu()  //displays withdrawal menu
+        {
+            Console.Clear();
+            Console.WriteLine("\r\n\r\n         CHECKING ACCOUNT                    SAVINGS ACCOUNT");
+            Console.WriteLine("        =======================    ====================================\r\n");
+            Console.WriteLine("        * no minimum balance         * minimum balance $1500 required");
+            Console.WriteLine("        * no interest                * 1% compounded interest");
+            Console.WriteLine("        * no ATM fees");
+            Console.WriteLine("\r\n  NOTE: If you open both accounts, you get free overdraft protection!\r\n");              
+            Console.WriteLine("\r\n\tWhat type of account would you like to open?\r\n");
+            Console.WriteLine("\t1.  Checking Account");
+            Console.WriteLine("\t2.  Savings Account");
+            Console.WriteLine("\t3.  Both");
+            Console.WriteLine("\t4.  Exit");
+        }
+
+        static void Wait()   //keeps information on screen until user is ready to continue
+        {
+            Console.WriteLine("\r\n\r\n\tPress any key to continue ...");
+            Console.ReadKey();
+        }
+
     }
 }

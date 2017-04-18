@@ -26,11 +26,11 @@ namespace FinancialAdvisor
         {
             if (account.AcctNumber == -1)
             {
-                Console.WriteLine("\t\tN/A\t\t  No savings account");
+                Console.WriteLine("\t\tN/A\t\t\t     No savings account");
             }
             else
             {
-                Console.WriteLine("\t      {0}\t\t\t{1}", account.AcctNumber, account.Balance.ToString("#.00"));
+                Console.WriteLine("\t\t{0}\t  Savings \t\t{1:C}", account.AcctNumber, account.Balance);
             }
 
         }
